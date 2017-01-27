@@ -7,37 +7,100 @@
 
     <style media="screen">
         body {
-            font-family: Helvetica, sans-serif;
+            font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 15px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            outline: none;
+            height: 30px;
+            padding: 0 15px;
+            box-sizing: border-box;
+            line-height: 30px;
+            color: rgb(233, 245, 241);
+            border: none;
+            border-radius: 5px;
         }
 
         form {
             width: 500px;
-            padding: 20px;
+            padding: 0 20px;
             box-sizing: border-box;
         }
 
+        input {
+            display: block;
+            width: 100%;
+            padding: 0 10px;
+            border: 1px solid rgb(171, 171, 171);
+            border-radius: 5px;
+            height: 30px;
+            outline: none;
+        }
+
         label {
+            display: block;
+            margin: 15px 0 7px;
             font-weight: bold;
-            font-size: 15px;
+        }
+
+        #create-item-button {
+            margin: 15px 0 0;
+            background-color: rgb(71, 204, 71);
+        }
+
+        .delete-item-button {
+            background-color: rgb(224, 37, 23);
+        }
+
+        table {
+            margin: 20px 0 0 20px;
+            width: 800px;
+            padding: 20px;
+            box-sizing: border-box;
+            border-collapse: collapse;
+        }
+
+        table th {
+             text-align: left;
+        }
+
+        tr {
+            height: 35px;
+            border-top: 1px solid rgb(171, 171, 171);
+        }
+
+        td, th {
+            padding: 5px 0 5px 5px;
+        }
+
+        tr:first-child {
+            border-top: none;
+        }
+
+        tr:nth-child(2n) {
+            background-color: rgb(241, 241, 241);
         }
     </style>
 </head>
 <body>
     <form method="post" action="/items">
         <label>
-            Name:
+            User name
         </label>
-        <input id="name-input" type="text" name="name" />
+        <input id="name-input" type="text" name="name" placeholder="Input name" />
 
         <label>
-            Email:
+            Email address
         </label>
-        <input id="email-input" type="text" name="email" />
+        <input id="email-input" type="text" name="email" placeholder="Your email address" />
 
         <label>
-            Phone:
+            Phone
         </label>
-        <input id="phone-input" type="text" name="phone" />
+        <input id="phone-input" type="text" name="phone" placeholder="+375ZZXXXYYYY"/>
 
         <button id="create-item-button" type="button">Submit</button>
     </form>
@@ -82,14 +145,16 @@
 
             if (!item) {
                 tr.innerHTML = '<th>#</th>'
-                    + '<th>name</th>'
-                    + '<th>email</th>'
-                    + '<th>phone</th>';
+                    + '<th>Name</th>'
+                    + '<th>Email</th>'
+                    + '<th>Phone</th>'
+                    + '<th>Actions</th>';
             } else {
-                tr.innerHTML += '<td>' + number + '</td>';
-                tr.innerHTML += '<td>' + item.name + '</td>';
-                tr.innerHTML += '<td>' + item.email + '</td>';
-                tr.innerHTML += '<td>' + item.phone + '</td>';
+                tr.innerHTML = '<td>' + number + '</td>'
+                    + '<td>' + item.name + '</td>'
+                    + '<td>' + item.email + '</td>'
+                    + '<td>' + item.phone + '</td>'
+                    + '<td><button id="'+ item.id + '" class="delete-item-button">Delete</button></td>';
             }
 
             return tr;
