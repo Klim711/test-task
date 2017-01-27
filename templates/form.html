@@ -6,28 +6,48 @@
     <title>Form</title>
 
     <style media="screen">
+        body {
+            font-family: Helvetica, sans-serif;
+        }
 
+        form {
+            width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
     <form method="post" action="/items">
         <label>
             Name:
-            <input id="name-input" type="text" name="name" />
         </label>
+        <input id="name-input" type="text" name="name" />
+
         <label>
             Email:
-            <input id="email-input" type="text" name="email" />
         </label>
+        <input id="email-input" type="text" name="email" />
+
         <label>
             Phone:
-            <input id="phone-input" type="text" name="phone" />
         </label>
+        <input id="phone-input" type="text" name="phone" />
+
         <button id="create-item-button" type="button">Submit</button>
     </form>
 
+    <table>
+    </table>
+
     <script type="text/javascript">
 
+        getItems();
         submitListener();
 
         function getItems() {
@@ -39,10 +59,42 @@
             xhr.onreadystatechange = function () {
                     if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                         console.log(xhr.responseText);
+                        drawTable(JSON.parse(xhr.responseText));
                     }
                 };
             xhr.send();
         }
+
+        function drawTable(items) {
+            var fragment = document.createDocumentFragment();
+
+            fragment.appendChild(createTableRow());
+
+            items.forEach(function(item, index) {
+                fragment.appendChild(createTableRow(item, index + 1));
+            });
+
+            document.querySelector('table').append(fragment);
+        }
+
+        function createTableRow(item, number) {
+            var tr = document.createElement('tr');
+
+            if (!item) {
+                tr.innerHTML = '<th>#</th>'
+                    + '<th>name</th>'
+                    + '<th>email</th>'
+                    + '<th>phone</th>';
+            } else {
+                tr.innerHTML += '<td>' + number + '</td>';
+                tr.innerHTML += '<td>' + item.name + '</td>';
+                tr.innerHTML += '<td>' + item.email + '</td>';
+                tr.innerHTML += '<td>' + item.phone + '</td>';
+            }
+
+            return tr;
+        }
+
 
         function submitListener() {
             document.querySelector('#create-item-button').addEventListener('click', postItem);
