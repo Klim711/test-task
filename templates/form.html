@@ -4,22 +4,76 @@
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
     <title>Form</title>
+
+    <style media="screen">
+
+    </style>
 </head>
 <body>
     <form method="post" action="/items">
         <label>
             Name:
-            <input type="text" name="name" />
+            <input id="name-input" type="text" name="name" />
         </label>
         <label>
             Email:
-            <input type="text" name="email" />
+            <input id="email-input" type="text" name="email" />
         </label>
         <label>
             Phone:
-            <input type="text" name="phone" />
+            <input id="phone-input" type="text" name="phone" />
         </label>
-        <button type="submit">Submit</button>
+        <button id="create-item-button" type="button">Submit</button>
     </form>
+
+    <script type="text/javascript">
+
+        submitListener();
+
+        function getItems() {
+            var xhr = new XMLHttpRequest(),
+                method = 'GET',
+                url = 'http://localhost:8888/items';
+
+            xhr.open(method, url, true);
+            xhr.onreadystatechange = function () {
+                    if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+            xhr.send();
+        }
+
+        function submitListener() {
+            document.querySelector('#create-item-button').addEventListener('click', postItem);
+        }
+
+        function postItem() {
+            var xhr = new XMLHttpRequest(),
+                method = 'POST',
+                url = 'http://localhost:8888/items';
+
+            xhr.open(method, url, true);
+            xhr.onreadystatechange = function () {
+                    if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+
+            console.log(JSON.stringify(collectItemInfo()));
+            xhr.send(collectItemInfo());
+        }
+
+        function collectItemInfo() {
+            var data = '';
+
+            data += 'name=' + document.querySelector('#name-input').value;
+            data += '&email=' + document.querySelector('#email-input').value;
+            data += '&phone=' + document.querySelector('#phone-input').value;
+
+            return data;
+        }
+
+    </script>
 </body>
 </html>
