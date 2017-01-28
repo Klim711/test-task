@@ -19,7 +19,7 @@
             padding: 0 15px;
             box-sizing: border-box;
             line-height: 30px;
-            color: rgb(233, 245, 241);
+            color: rgb(255, 255, 255);
             border: none;
             border-radius: 5px;
         }
@@ -109,9 +109,15 @@
 
     <script type="text/javascript">
 
-        getItems();
+        updating();
         submitListener();
         deleteListener();
+
+        function updating() {
+            getItems();
+            setTimeout(updating, 1000);
+        }
+
 
         function getItems() {
             var xhr = new XMLHttpRequest(),
@@ -128,15 +134,20 @@
         }
 
         function drawTable(items) {
+            var table = document.querySelector('table');
+            table.innerHTML = '';
+
             var fragment = document.createDocumentFragment();
 
-            fragment.appendChild(createTableRow());
+            if (items.length > 0) {
+                fragment.appendChild(createTableRow());
+            }
 
             items.forEach(function(item, index) {
                 fragment.appendChild(createTableRow(item, index + 1));
             });
 
-            document.querySelector('table').append(fragment);
+            table.append(fragment);
         }
 
         function createTableRow(item, number) {
@@ -173,6 +184,7 @@
             xhr.onreadystatechange = function () {
                     if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                         console.log(xhr.responseText);
+                        getItems();
                     }
                 };
 
@@ -206,6 +218,7 @@
             xhr.onreadystatechange = function () {
                     if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                         console.log(xhr.responseText);
+                        getItems();
                     }
                 };
 
