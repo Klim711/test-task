@@ -184,6 +184,7 @@
             xhr.onreadystatechange = function () {
                     if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                         console.log(xhr.responseText);
+                        cleanForm();
                         getItems();
                     }
                 };
@@ -199,6 +200,12 @@
             data += '&phone=' + document.querySelector('#phone-input').value;
 
             return data;
+        }
+
+        function cleanForm() {
+            document.querySelector('#name-input').value = '';
+            document.querySelector('#email-input').value = '';
+            document.querySelector('#phone-input').value = '';
         }
 
         function deleteListener() {
