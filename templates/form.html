@@ -105,13 +105,13 @@
         <button id="create-item-button" type="button">Submit</button>
     </form>
 
-    <table>
-    </table>
+    <table></table>
 
     <script type="text/javascript">
 
         getItems();
         submitListener();
+        deleteListener();
 
         function getItems() {
             var xhr = new XMLHttpRequest(),
@@ -121,7 +121,6 @@
             xhr.open(method, url, true);
             xhr.onreadystatechange = function () {
                     if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        console.log(xhr.responseText);
                         drawTable(JSON.parse(xhr.responseText));
                     }
                 };
@@ -177,7 +176,6 @@
                     }
                 };
 
-            console.log(JSON.stringify(collectItemInfo()));
             xhr.send(collectItemInfo());
         }
 
@@ -189,6 +187,29 @@
             data += '&phone=' + document.querySelector('#phone-input').value;
 
             return data;
+        }
+
+        function deleteListener() {
+            document.querySelector('table').addEventListener('click', function(e) {
+                if (e.target.className === 'delete-item-button') {
+                    deleteItem(e.target.id);
+                }
+            });
+        }
+
+        function deleteItem(itemId) {
+            var xhr = new XMLHttpRequest(),
+                method = 'DELETE',
+                url = 'http://localhost:8888/items' + '?id=' + itemId;
+
+            xhr.open(method, url, true);
+            xhr.onreadystatechange = function () {
+                    if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+
+            xhr.send();
         }
 
     </script>
