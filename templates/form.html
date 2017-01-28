@@ -93,10 +93,12 @@
         tr:first-child {
             border-top: none;
             background-color: rgb(255, 255, 255);
+            cursor: auto;
         }
 
         tr:hover {
             background-color: rgb(255, 255, 255);
+            cursor: pointer;
         }
     </style>
 </head>
@@ -196,7 +198,7 @@
         function validation() {
             document.querySelector("#name-input").addEventListener('keyup', nameValidation);
             document.querySelector("#email-input").addEventListener('keyup', emailValidation);
-            document.querySelector("#email-input").addEventListener('keyup', phoneValidation);
+            document.querySelector("#phone-input").addEventListener('keyup', phoneValidation);
         }
 
         function nameValidation(e) {
@@ -223,11 +225,11 @@
         }
 
         function isEmail(email){
-        	return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );
+        	return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
         }
 
         function phoneValidation(e) {
-            if (e.target.value === '') {
+            if (!isPhone(e.target.value)) {
                 document.querySelector('.invalid-phone').classList.remove('hidden');
                 isPhoneValid = false;
 
@@ -235,6 +237,10 @@
                 document.querySelector('.invalid-phone').classList.add('hidden');
                 isPhoneValid = true;
             }
+        }
+
+        function isPhone(phone) {
+            return /(^\+375[0-9]{9}$)|(^8017[0-9]{7}$)/.test(phone);
         }
 
         function submitListener() {
