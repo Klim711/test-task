@@ -46,6 +46,19 @@
             font-weight: bold;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        .invalid-name, .invalid-email, .invalid-phone {
+            display: block;
+            color: rgb(255, 0, 0);
+        }
+
+        .valid-email {
+            color: rgb(0, 255, 0);
+        }
+
         #create-item-button {
             margin: 15px 0 0;
             background-color: rgb(71, 204, 71);
@@ -70,6 +83,7 @@
         tr {
             height: 35px;
             border-top: 1px solid rgb(171, 171, 171);
+            background-color: rgb(241, 241, 241);
         }
 
         td, th {
@@ -78,10 +92,11 @@
 
         tr:first-child {
             border-top: none;
+            background-color: rgb(255, 255, 255);
         }
 
-        tr:nth-child(2n) {
-            background-color: rgb(241, 241, 241);
+        tr:hover {
+            background-color: rgb(255, 255, 255);
         }
     </style>
 </head>
@@ -91,16 +106,19 @@
             User name
         </label>
         <input id="name-input" type="text" name="name" placeholder="Input name" />
+        <label for="name-input" class="invalid-name hidden">Invalid name</label>
 
         <label>
             Email address
         </label>
         <input id="email-input" type="text" name="email" placeholder="Your email address" />
+        <label for="email-input" class="invalid-email hidden">Invalid email address</label>
 
         <label>
             Phone
         </label>
         <input id="phone-input" type="text" name="phone" placeholder="+375ZZXXXYYYY"/>
+        <label for="phone-input" class="invalid-phone hidden">Invalid phone number</label>
 
         <button id="create-item-button" type="button">Submit</button>
     </form>
@@ -109,7 +127,12 @@
 
     <script type="text/javascript">
 
+        var isEmailValid = false,
+            isNameValid = false,
+            isPhoneValid = false;
+
         updating();
+        validation();
         submitListener();
         deleteListener();
 
@@ -170,12 +193,60 @@
             return tr;
         }
 
+        function validation() {
+            document.querySelector("#name-input").addEventListener('keyup', nameValidation);
+            document.querySelector("#email-input").addEventListener('keyup', emailValidation);
+            document.querySelector("#email-input").addEventListener('keyup', phoneValidation);
+        }
+
+        function nameValidation(e) {
+            if (e.target.value === '') {
+                document.querySelector('.invalid-name').classList.remove('hidden');
+                isNameValid = false;
+            } else {
+                document.querySelector('.invalid-name').classList.add('hidden');
+                isNameValid = true;
+
+            }
+        }
+
+        function emailValidation(e) {
+            if (!isEmail(e.target.value)) {
+                document.querySelector('.invalid-email').classList.remove('hidden');
+                isEmailValid = false;
+
+            } else {
+                document.querySelector('.invalid-email').classList.add('hidden');
+                isEmailValid = true;
+
+            }
+        }
+
+        function isEmail(email){
+        	return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );
+        }
+
+        function phoneValidation(e) {
+            if (e.target.value === '') {
+                document.querySelector('.invalid-phone').classList.remove('hidden');
+                isPhoneValid = false;
+
+            } else {
+                document.querySelector('.invalid-phone').classList.add('hidden');
+                isPhoneValid = true;
+            }
+        }
 
         function submitListener() {
             document.querySelector('#create-item-button').addEventListener('click', postItem);
         }
 
         function postItem() {
+
+            if (!isFormValid()) {
+                return;
+            }
+
             var xhr = new XMLHttpRequest(),
                 method = 'POST',
                 url = 'http://localhost:8888/items';
@@ -183,13 +254,25 @@
             xhr.open(method, url, true);
             xhr.onreadystatechange = function () {
                     if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        console.log(xhr.responseText);
                         cleanForm();
                         getItems();
                     }
                 };
 
             xhr.send(collectItemInfo());
+        }
+
+        function isFormValid() {
+            if (!isNameValid) {
+                document.querySelector('.invalid-name').classList.remove('hidden');
+            }
+            if (!isEmailValid) {
+                document.querySelector('.invalid-email').classList.remove('hidden');
+            }
+            if (!isPhoneValid) {
+                document.querySelector('.invalid-phone').classList.remove('hidden');
+            }
+            return isNameValid && isEmailValid && isPhoneValid;
         }
 
         function collectItemInfo() {
@@ -204,8 +287,13 @@
 
         function cleanForm() {
             document.querySelector('#name-input').value = '';
+            isNameValid = false;
+
             document.querySelector('#email-input').value = '';
+            isEmailValid = false;
+
             document.querySelector('#phone-input').value = '';
+            isPhoneValid = false;
         }
 
         function deleteListener() {
@@ -224,7 +312,6 @@
             xhr.open(method, url, true);
             xhr.onreadystatechange = function () {
                     if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        console.log(xhr.responseText);
                         getItems();
                     }
                 };
